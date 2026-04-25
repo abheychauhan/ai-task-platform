@@ -12,7 +12,7 @@ spec:
 
   source:
     # Your INFRA repository URL
-    repoURL: https://github.com/YOUR_USERNAME/ai-task-platform-infra
+    repoURL: https://github.com/abheychauhan/ai-task-platform-infra
     targetRevision: main
     path: k8s/overlays/production
 
