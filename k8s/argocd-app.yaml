@@ -1,0 +1,43 @@
+# This file goes in your INFRA repository
+# Apply with: kubectl apply -f argocd-app.yaml -n argocd
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ai-task-platform
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+
+  source:
+    # Your INFRA repository URL
+    repoURL: https://github.com/YOUR_USERNAME/ai-task-platform-infra
+    targetRevision: main
+    path: k8s/overlays/production
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: ai-task-platform
+
+  syncPolicy:
+    automated:
+      prune: true        # Remove resources deleted from git
+      selfHeal: true     # Re-sync if someone manually changes cluster state
+    syncOptions:
+      - CreateNamespace=true
+      - PrunePropagationPolicy=foreground
+      - ApplyOutOfSyncOnly=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+
+  # Health checks
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      jsonPointers:
+        - /spec/replicas   # Don't override HPA managed replicas
