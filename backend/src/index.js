@@ -25,7 +25,6 @@ const limiter = rateLimit({
   max: 100,
   message: { error: 'Too many requests, please try again later.' },
 });
-
 app.use('/api/', limiter);
 
 const authLimiter = rateLimit({
@@ -53,6 +52,7 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500).json({
     error: process.env.NODE_ENV === 'production' ? 'Internal server error' : err.message,
   });
+  next();
 });
 
 const PORT = process.env.PORT || 5000;

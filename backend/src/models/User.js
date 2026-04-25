@@ -29,13 +29,8 @@ const userSchema = new mongoose.Schema({
 userSchema.index({ email: 1 });
 
 userSchema.pre('save', async function () {
-   try {
-       if (!this.isModified('password')) return next();
-       this.password = await bcrypt.hash(this.password, 12);
-  
-   } catch (error) {
-     throw new Error('Error hashing password');
-   }
+  if (!this.isModified('password')) return;
+  this.password = await bcrypt.hash(this.password, 12);
 });
 
 userSchema.methods.comparePassword = async function (candidatePassword) {
