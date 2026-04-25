@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { getTask, runTask } from '../api';
@@ -15,7 +15,7 @@ export default function TaskDetail() {
   const [loading, setLoading] = useState(true);
   const [running, setRunning] = useState(false);
 
-  const fetchTask = async () => {
+  const fetchTask = useCallback(async () => {
     try {
       const { data } = await getTask(id);
       setTask(data.task);
@@ -24,16 +24,15 @@ export default function TaskDetail() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
 
   useEffect(() => {
     fetchTask();
-    // Poll every 3s while running
     const interval = setInterval(() => {
-      if (task?.status === 'running' || task?.status === 'pending') fetchTask();
+      fetchTask();
     }, 3000);
     return () => clearInterval(interval);
-  }, [id, task?.status]);
+  }, [fetchTask]);
 
   const handleRun = async () => {
     setRunning(true);
@@ -66,7 +65,6 @@ export default function TaskDetail() {
       </nav>
 
       <div className="container">
-        {/* Header */}
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '1.5rem', gap: '1rem', flexWrap: 'wrap' }}>
           <div>
             <h1 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.4rem' }}>{task.title}</h1>
@@ -84,7 +82,6 @@ export default function TaskDetail() {
           )}
         </div>
 
-        {/* Info cards */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.75rem', marginBottom: '1.5rem' }}>
           {[
             { label: 'Created',   value: formatDate(task.createdAt) },
@@ -99,7 +96,6 @@ export default function TaskDetail() {
           ))}
         </div>
 
-        {/* Input Text */}
         <div className="card" style={{ marginBottom: '1.25rem' }}>
           <h3 style={{ marginBottom: '0.75rem', fontSize: '0.95rem', color: 'var(--text-secondary)' }}>INPUT TEXT</h3>
           <div style={{ background: 'var(--bg-secondary)', borderRadius: '8px', padding: '1rem', fontFamily: 'monospace', fontSize: '0.85rem', whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
@@ -107,7 +103,6 @@ export default function TaskDetail() {
           </div>
         </div>
 
-        {/* Result */}
         {task.result && (
           <div className="card" style={{ marginBottom: '1.25rem' }}>
             <h3 style={{ marginBottom: '0.75rem', fontSize: '0.95rem', color: 'var(--text-secondary)' }}>RESULT ✅</h3>
@@ -119,7 +114,6 @@ export default function TaskDetail() {
           </div>
         )}
 
-        {/* Error */}
         {task.errorMessage && (
           <div className="card" style={{ marginBottom: '1.25rem', borderColor: 'var(--error)' }}>
             <h3 style={{ marginBottom: '0.5rem', fontSize: '0.95rem', color: 'var(--error)' }}>ERROR ❌</h3>
@@ -127,7 +121,6 @@ export default function TaskDetail() {
           </div>
         )}
 
-        {/* Logs */}
         <div className="card">
           <h3 style={{ marginBottom: '0.75rem', fontSize: '0.95rem', color: 'var(--text-secondary)' }}>
             TASK LOGS ({task.logs?.length || 0} entries)
