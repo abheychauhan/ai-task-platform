@@ -8,6 +8,6 @@ data:
   PORT: "5000"
   REDIS_HOST: "redis-service"
   REDIS_PORT: "6379"
-  FRONTEND_URL: "https://ai-task-platform.yourdomain.com"
-  LOG_LEVEL: "info"
+  FRONTEND_URL: "http://localhost:3000"
+  LOG_LEVEL: "INFO"
   JWT_EXPIRES_IN: "7d"
