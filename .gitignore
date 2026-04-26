@@ -32,3 +32,5 @@ logs/
 
 # Docker
 .dockerignore
+
+k8s/base/secrets.yaml

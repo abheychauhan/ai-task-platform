@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: DOCKER_USERNAME/ai-task-frontend:IMAGE_TAG
+          image: abheychauhan/ai-task-frontend:latest
           ports:
             - containerPort: 80
           resources:

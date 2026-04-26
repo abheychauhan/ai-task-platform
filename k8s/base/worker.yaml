@@ -24,7 +24,7 @@ spec:
       terminationGracePeriodSeconds: 60
       containers:
         - name: worker
-          image: DOCKER_USERNAME/ai-task-worker:IMAGE_TAG
+          image: abheychauhan/ai-task-worker:latest
           env:
             - name: REDIS_HOST
               valueFrom:
